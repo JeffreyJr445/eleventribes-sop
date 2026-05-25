@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eleven Tribes — Feed Content SOP v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest:     #0F150E;
+  --forest-mid: #1A2318;
+  --forest-card:#1E2B1C;
+  --gold:       #C9A84C;
+  --gold-light: #E2C97A;
+  --gold-dim:   #7A6030;
+  --gold-faint: rgba(201,168,76,0.08);
+  --cream:      #F5EFE0;
+  --muted:      #6A5E48;
+  --border:     rgba(201,168,76,0.14);
+  --border-mid: rgba(201,168,76,0.28);
+
+  --people-bg:    #182618;
+  --people-acc:   #5DB855;
+  --people-pill:  #243822;
+  --people-dim:   #3A6038;
+
+  --craft-bg:     #251A0A;
+  --craft-acc:    #D4A855;
+  --craft-pill:   #3E2C0E;
+  --craft-dim:    #6A4E1A;
+
+  --brand-bg:     #151824;
+  --brand-acc:    #8A9ADA;
+  --brand-pill:   #222840;
+  --brand-dim:    #4A5898;
+
+  --events-bg:    #241510;
+  --events-acc:   #D48C50;
+  --events-pill:  #3E2214;
+  --events-dim:   #6A4020;
+
+  --flex-bg:      #1C1C1C;
+  --flex-acc:     #A09878;
+  --flex-pill:    #303028;
+  --flex-dim:     #6A6050;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body {
+  font-family:'Jost',sans-serif;
+  background:var(--forest);
+  color:var(--cream);
+  min-height:100vh;
+  padding:2.5rem 1.5rem 5rem;
+}
+
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:0.5;
+}
+
+.wrap{position:relative;z-index:1;max-width:740px;margin:0 auto;}
+
+/* HEADER */
+.hdr{text-align:center;margin-bottom:3rem;padding-bottom:2.5rem;border-bottom:0.5px solid var(--border-mid);}
+.hdr-eye{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;opacity:.8;font-weight:400;}
+.hdr h1{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--cream);line-height:1.05;margin-bottom:6px;letter-spacing:-.5px;}
+.hdr h1 em{font-style:italic;color:var(--gold-light);}
+.hdr-rule{width:44px;height:.5px;background:var(--gold);margin:14px auto;opacity:.5;}
+.hdr-sub{font-size:12px;color:var(--muted);font-weight:300;line-height:1.75;max-width:460px;margin:0 auto 1.8rem;letter-spacing:.2px;}
+
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:1.2rem;}
+.leg{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-weight:400;letter-spacing:.4px;}
+.lsq{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+
+/* RULES */
+.rules{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;padding-top:1.2rem;border-top:.5px solid var(--border);}
+.rule{font-size:10px;color:var(--muted);padding:3px 11px;border:.5px solid var(--border-mid);border-radius:20px;background:var(--gold-faint);font-weight:300;}
+.rule b{font-weight:500;color:var(--gold-light);}
+
+/* PAGES */
+.pages{display:flex;flex-direction:column;gap:2rem;}
+
+.page-block{border:.5px solid var(--border-mid);border-radius:16px;overflow:hidden;background:var(--forest-card);}
+
+.page-hdr{padding:13px 20px;background:linear-gradient(90deg,rgba(201,168,76,.13) 0%,rgba(201,168,76,.04) 100%);border-bottom:.5px solid var(--border-mid);display:flex;justify-content:space-between;align-items:center;gap:1rem;}
+.page-hdr-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--gold-light);letter-spacing:.3px;}
+.page-hdr-meta{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.page-hdr-sub{font-size:10px;color:var(--gold-dim);font-style:italic;font-weight:300;}
+.reel-badge{font-size:8px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:rgba(201,168,76,.15);color:var(--gold-light);border:.5px solid var(--border-mid);}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+
+.cell{
+  padding:13px 14px;
+  border-right:.5px solid rgba(201,168,76,.08);
+  border-bottom:.5px solid rgba(201,168,76,.08);
+  cursor:pointer;
+  min-height:100px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:all .16s ease;
+  position:relative;
+}
+.cell:hover{filter:brightness(1.14);transform:scale(1.015);}
+.cell:nth-child(3n){border-right:none;}
+.cell:nth-last-child(-n+3){border-bottom:none;}
+
+.cell-reel-dot{
+  position:absolute;
+  top:8px;right:8px;
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--gold);
+  opacity:.7;
+}
+
+.cell-num{font-size:8px;font-weight:500;letter-spacing:1px;opacity:.4;margin-bottom:4px;text-transform:uppercase;}
+.cell-title{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;line-height:1.25;margin-bottom:3px;}
+.cell-sub{font-size:9px;line-height:1.4;opacity:.5;margin-bottom:8px;font-weight:300;}
+.cell-bottom{display:flex;align-items:center;justify-content:space-between;}
+
+.fmt-pill{font-size:8px;font-weight:500;padding:2px 8px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;}
+.cell-arr{font-size:11px;opacity:.2;}
+
+/* Pillar cells */
+.p-people{background:var(--people-bg);color:var(--people-acc);}
+.p-craft {background:var(--craft-bg); color:var(--craft-acc);}
+.p-brand {background:var(--brand-bg); color:var(--brand-acc);}
+.p-events{background:var(--events-bg);color:var(--events-acc);}
+.p-flex  {background:var(--flex-bg);  color:var(--flex-acc);}
+
+.pill-people{background:var(--people-pill);color:var(--people-acc);}
+.pill-craft {background:var(--craft-pill); color:var(--craft-acc);}
+.pill-brand {background:var(--brand-pill); color:var(--brand-acc);}
+.pill-events{background:var(--events-pill);color:var(--events-acc);}
+.pill-flex  {background:var(--flex-pill);  color:var(--flex-acc);}
+
+/* SAVE BADGE */
+.save-badge{
+  position:absolute;bottom:8px;right:8px;
+  font-size:7px;font-weight:500;letter-spacing:.6px;text-transform:uppercase;
+  padding:1px 5px;border-radius:10px;
+  background:rgba(201,168,76,.18);
+  color:var(--gold-light);
+  border:.5px solid rgba(201,168,76,.3);
+}
+
+/* LOOP NOTE */
+.loop-note{
+  text-align:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;font-weight:300;font-style:italic;
+  color:var(--gold-dim);
+  padding:2rem 0 .5rem;
+  letter-spacing:.3px;
+}
+
+/* MODAL */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(6,10,6,.82);
+  z-index:1000;align-items:center;justify-content:center;
+  padding:1.5rem;backdrop-filter:blur(5px);
+}
+.overlay.open{display:flex;}
+
+.modal{
+  background:var(--forest-mid);
+  border:.5px solid var(--border-mid);
+  border-radius:16px;
+  padding:1.8rem;
+  max-width:400px;width:100%;
+  max-height:90vh;overflow-y:auto;
+  position:relative;
+}
+.modal::-webkit-scrollbar{width:3px;}
+.modal::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:3px;}
+
+.m-close{
+  position:absolute;top:1rem;right:1rem;
+  cursor:pointer;font-size:20px;color:var(--muted);
+  line-height:1;background:none;border:none;
+  font-family:sans-serif;transition:color .15s;
+}
+.m-close:hover{color:var(--gold-light);}
+
+.m-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.m-pillar{font-size:9px;font-weight:500;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.8px;}
+.m-fmt-tag{font-size:9px;color:var(--muted);font-weight:300;letter-spacing:.3px;}
+
+.m-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:26px;font-weight:400;color:var(--cream);
+  margin-bottom:6px;line-height:1.12;padding-right:1.5rem;
+}
+.m-sub{font-size:11px;color:var(--gold-dim);margin-bottom:12px;font-weight:300;font-style:italic;}
+
+.m-purpose{
+  font-size:12px;color:var(--muted);line-height:1.8;
+  margin-bottom:1.2rem;padding-bottom:1.2rem;
+  border-bottom:.5px solid var(--border);font-weight:300;
+}
+
+.m-label{font-size:9px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-dim);margin-bottom:8px;}
+
+.m-list{list-style:none;padding:0;margin-bottom:1.2rem;}
+.m-list li{
+  font-size:11px;color:var(--cream);
+  padding:5px 0;border-bottom:.5px solid var(--border);
+  display:flex;gap:10px;line-height:1.6;font-weight:300;opacity:.85;
+}
+.m-list li:last-child{border-bottom:none;}
+.mdot{width:3px;height:3px;border-radius:50%;background:var(--gold-dim);flex-shrink:0;margin-top:7px;}
+
+/* Caption box */
+.cap-box{
+  background:rgba(201,168,76,.05);
+  border:.5px solid var(--border-mid);
+  border-radius:8px;padding:12px 14px;
+  margin-bottom:1rem;
+}
+.cap-row{
+  display:flex;gap:10px;align-items:flex-start;
+  font-size:11px;padding:4px 0;
+  border-bottom:.5px solid var(--border);
+  color:var(--cream);font-weight:300;line-height:1.55;opacity:.85;
+}
+.cap-row:last-child{border-bottom:none;}
+.cap-lbl{
+  font-size:8px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--gold-dim);min-width:48px;padding-top:2px;flex-shrink:0;
+}
+
+/* Metrics */
+.metrics{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem;}
+.metric{
+  font-size:10px;padding:3px 10px;border-radius:20px;
+  background:rgba(201,168,76,.07);border:.5px solid var(--border-mid);
+  color:var(--gold-light);font-weight:300;
+}
+
+/* Production badge */
+.prod-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:9px;padding:3px 10px;border-radius:20px;
+  margin-bottom:1rem;font-weight:400;letter-spacing:.3px;
+}
+.prod-easy  {background:rgba(93,184,85,.1); color:#7ADA72;border:.5px solid rgba(93,184,85,.2);}
+.prod-medium{background:rgba(212,168,85,.1);color:#E8C07A;border:.5px solid rgba(212,168,85,.2);}
+.prod-plan  {background:rgba(212,100,50,.1); color:#E89060;border:.5px solid rgba(212,100,50,.2);}
+
+/* Never */
+.m-never{
+  font-size:11px;color:#E89090;
+  padding:9px 12px;
+  background:rgba(200,70,70,.08);
+  border:.5px solid rgba(200,70,70,.22);
+  border-radius:7px;font-weight:300;line-height:1.6;
+  margin-top:.5rem;
+}
+.m-never b{font-weight:500;color:#F0A0A0;}
+
+/* Mobile */
+@media(max-width:520px){
+  body{padding:1.5rem 1rem 3rem;}
+  .hdr h1{font-size:34px;}
+  .cell{min-height:82px;padding:10px 10px;}
+  .cell-title{font-size:12px;}
+  .page-hdr-sub{display:none;}
+  .modal{padding:1.4rem;}
+  .m-title{font-size:21px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="hdr-eye">Eleven Tribes · Zimbali Lodge · Ballito · KwaZulu-Natal</div>
+  <h1>Feed Content <em>SOP</em></h1>
+  <div class="hdr-rule"></div>
+  <p class="hdr-sub">Work through Page 1 → 2 → 3, then loop. Post 3 to 4 times per week. Follow the next cell in sequence. Click any cell for the full brief, caption formula and production notes.</p>
+  <div class="legend">
+    <span class="leg"><span class="lsq" style="background:var(--people-acc)"></span>People & Community</span>
+    <span class="leg"><span class="lsq" style="background:var(--craft-acc)"></span>Craft & Product</span>
+    <span class="leg"><span class="lsq" style="background:var(--brand-acc)"></span>Brand & Culture</span>
+    <span class="leg"><span class="lsq" style="background:var(--events-acc)"></span>Events & Moments</span>
+    <span class="leg"><span class="lsq" style="background:var(--flex-acc)"></span>Flex Slot</span>
+    <span class="leg"><span class="lsq" style="background:var(--gold);border-radius:50%"></span>Reel</span>
+    <span class="leg"><span class="lsq" style="background:rgba(201,168,76,.35);"></span>Save driver</span>
+  </div>
+  <div class="rules">
+    <span class="rule"><b>85% faces</b> — food never alone</span>
+    <span class="rule"><b>2 reels per page min</b> — never adjacent</span>
+    <span class="rule"><b>1 CTA per post</b> — one action only</span>
+    <span class="rule"><b>Story first</b> — no naked dishes</span>
+    <span class="rule"><b>Specific always</b> — name the tribe, the person, the place</span>
+    <span class="rule"><b>No flyers on feed</b> — events live in Stories</span>
+  </div>
+</div>
+
+<div class="pages" id="pages"></div>
+<div class="loop-note">After post 27 — loop back to Page 1 and repeat</div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="handleOverlay(event)">
+  <div class="modal">
+    <button class="m-close" onclick="closeModal()">×</button>
+    <div class="m-top">
+      <span class="m-pillar" id="m-pillar"></span>
+      <span class="m-fmt-tag" id="m-fmt"></span>
+    </div>
+    <div id="m-prod"></div>
+    <div class="m-title" id="m-title"></div>
+    <div class="m-sub" id="m-sub"></div>
+    <div class="m-purpose" id="m-purpose"></div>
+    <div class="m-label">What to shoot / make</div>
+    <ul class="m-list" id="m-list"></ul>
+    <div class="m-label">Caption formula</div>
+    <div class="cap-box" id="m-cap"></div>
+    <div class="m-label" style="margin-top:1rem;">Optimise for</div>
+    <div class="metrics" id="m-metrics"></div>
+    <div id="m-never"></div>
+  </div>
+</div>
+
+<script>
+const P = {
+  people:{name:'People & Community',cell:'p-people',pill:'pill-people'},
+  craft: {name:'Craft & Product',   cell:'p-craft', pill:'pill-craft'},
+  brand: {name:'Brand & Culture',   cell:'p-brand', pill:'pill-brand'},
+  events:{name:'Events & Moments',  cell:'p-events',pill:'pill-events'},
+  flex:  {name:'Flex Slot',         cell:'p-flex',  pill:'pill-flex'}
+};
+
+// production: 'easy' | 'medium' | 'plan'
+// save: true = show save badge
+// reel: true = show gold dot
+
+const pages = [
+{
+  title:'Page 1 — Posts 1 to 9',
+  sub:'Easy to execute. Weeks 1–2. No planned shoots needed.',
+  reelCount:3,
+  cells:[
+    {
+      p:'people',fmt:'Carousel',reel:false,save:true,prod:'easy',
+      title:'Our People',sub:'Guest UGC. Real faces. No text overlays.',
+      purpose:'Opens the entire cycle with warmth and belonging. Real guests who came, sat at this table, and left different. One face per slide — no text overlaid on their image. Every follower wants to be on this grid. Every featured guest shares it. This is the community signal that tells the algorithm this account has a real audience.',
+      points:[
+        'Slide 1: one bold line only — "These are our people." Nothing else on the slide',
+        'One guest image per slide — warmest, most joyful images from the past month',
+        'Zero text overlays on people shots — let their faces do everything',
+        'Mix: couples, solo diners, groups, different ages and backgrounds',
+        'Final slide: "Tag us when you visit. We are always watching." Reservation link only'
+      ],
+      cap:{hook:'"These are our people."',story:'Every table at Eleven Tribes holds a story. These are a few of ours from this month.',tie:'Eleven nations. Every kind of person. One table.',cta:'Tag someone you\'d bring here ↓'},
+      metrics:['saves','tags','comments'],
+      never:'Never use empty tables or food-only images. Every single slide — a human face.'
+    },
+    {
+      p:'brand',fmt:'Carousel',reel:false,save:true,prod:'easy',
+      title:'We Heard What You Said',sub:'Real guest words. Big type. Deep atmosphere.',
+      purpose:'Social proof delivered with editorial confidence. Real guest words from DMs, Google reviews, Dineplan — styled as large type over deep atmospheric backgrounds with faces softly visible behind. She screenshots this and sends it to whoever she wants to bring. One of the highest screenshot-and-share rates of any format. The quotes must be SPECIFIC — not "amazing food" but "I recognised the spice from my ouma\'s kitchen and I started crying."',
+      points:[
+        'Source quotes from: Dineplan reviews, Google reviews, Instagram DMs, verbal feedback from the floor',
+        'Pick quotes that are emotionally specific — not generic praise',
+        '5 to 6 slides — one quote per slide, nothing else competing for attention',
+        'Large type over deep forest green or candlelit background — faces blurred but warm behind',
+        'Final slide: warm dining room with faces. Reservation link only — no long CTA text'
+      ],
+      cap:{hook:'We don\'t need to describe the food. Our guests do it better.',story:'A few things people said this month — unprompted, unedited.',tie:'This is what eleven nations on one table feels like.',cta:'Save this for when someone asks why you\'re going to Zimbali ↓'},
+      metrics:['saves','screenshots','shares'],
+      never:null
+    },
+    {
+      p:'people',fmt:'Reel',reel:true,save:false,prod:'easy',
+      title:'UGC Reel',sub:'Compiled guest footage. Authentic. No production needed.',
+      purpose:'The first reach driver of the cycle. Compiled from real guest footage — Stories they\'ve posted, videos they\'ve tagged you in, clips you\'ve collected on the night. Edit into a single 20 to 30 second Reel. The rawness is the entire point. This feels more trustworthy than any produced content because it IS real. UGC drives 4x higher conversion than branded photography. This is the post that fills tables.',
+      points:[
+        'Collect guest footage weekly — DM guests who post and ask for their raw clip',
+        'Brief micro-influencers specifically: "Film your table arriving, your first reaction, the view." Give them the shot list.',
+        'Edit in sequence: arrival → the setting → the food arriving → a real reaction',
+        'Use natural sound from the clips underneath trending audio — do not bury the real sounds completely',
+        'Text overlay on first frame: "A night at Eleven Tribes — through your eyes."',
+        'Under 30 seconds. No logo intro. No fade out. Hard stop.'
+      ],
+      cap:{hook:'You filmed it. We compiled it.',story:'A few nights at Eleven Tribes — through the people who were actually there.',tie:'Eleven nations. One table. Come find your seat.',cta:'Tag the person you\'d bring here ↓'},
+      metrics:['reach','shares','follows'],
+      never:'Never use footage without the guest\'s permission. Never over-edit — the rawness is the asset.'
+    },
+    {
+      p:'craft',fmt:'Carousel',reel:false,save:true,prod:'easy',
+      title:'Dish Storytelling',sub:'One dish. One tribe. Chef opens it. Always.',
+      purpose:'The most important save-driver on the account. One dish told as a complete story — the tribe it comes from, the ingredient, the technique, Chef Malusi\'s face, the finished plate, a guest receiving it. This is the Eleven Tribes format no other restaurant in South Africa can replicate. It teaches, it moves, it gets saved and sent to people who need to understand what this place is before they visit.',
+      points:[
+        'Slide 1: Chef Malusi — close, confident, looking directly at camera. NOT the dish.',
+        'Slide 2: the hero ingredient in his hands — tribe name in large text overlay',
+        'Slide 3: one sentence on the cultural context. Where this comes from. Why it exists. Name the people.',
+        'Slide 4: the technique — hands in action, process visible, face in frame',
+        'Slide 5: the finished plate — Chef\'s hands still present, never a floating dish',
+        'Slide 6: a guest receiving it — their face, their first reaction, the connection'
+      ],
+      cap:{hook:'This dish is [Tribe name]. Here is its story.',story:'[2–3 sentences — specific, human, real. Name the ingredient. Name the people. Not "inspired by heritage" — tell the actual story.]',tie:'Eleven nations. This is one of them.',cta:'Save this. Then come order it ↓'},
+      metrics:['saves','comments','DMs'],
+      never:'Never open with the finished dish. Open with the chef\'s face. Every single time.'
+    },
+    {
+      p:'brand',fmt:'Carousel',reel:false,save:true,prod:'easy',
+      title:'Things Overheard',sub:'Anonymous table moments. Warm, human, South African.',
+      purpose:'Anonymous lines heard at real tables — styled as bold editorial type on deep atmospheric backgrounds. Funny, warm, culturally resonant. This is the screenshot-and-send-to-a-friend post. Collect these religiously from the floor team every week. The best ones involve a cultural recognition moment, a proposal, a first taste that triggered a memory. Keep them human and specific — never generic restaurant banter.',
+      points:[
+        '"Table 4: She said she recognised the spice from her ouma\'s kitchen. She cried. We pretended not to notice."',
+        '"Table 11: He ordered the venison. She\'d never tried game. They shared it. He proposed at dessert."',
+        '"Table 2: A man ate the heritage bread and went quiet for a full minute. Then said: my grandmother made this."',
+        'Deep warm backgrounds — candles, forest light — faces blurred but present behind every slide',
+        '4 to 5 quotes maximum. Final slide: warm room, faces, "See you at your table." Reservation link only'
+      ],
+      cap:{hook:'We hear everything. We\'re just too polite to say so.',story:'A few things overheard at Eleven Tribes this month.',tie:'Food does something to people. These tables prove it.',cta:'Tell us your table moment in the comments ↓'},
+      metrics:['screenshots','shares','comments'],
+      never:null
+    },
+    {
+      p:'people',fmt:'Reel',reel:true,save:false,prod:'easy',
+      title:'Ask the Team Reel',sub:'One question. Real answers. One take per person.',
+      purpose:'Four to six team members answer one question — straight to camera, completely unscripted, 5 to 8 seconds each. Fast cuts. The team becomes characters the audience wants to meet before they arrive. This builds loyalty faster than any food post because people come back for people they feel they know. The imperfection is the point — do not direct their answers.',
+      points:[
+        'Question options: "What does this menu mean to you?" / "Which dish tells your story?" / "What do guests say that stays with you?"',
+        'Shoot on any shift — grab team members in the 30 minutes before service opens',
+        'Consistent framing — same spot for all clips, restaurant visible in background',
+        'One take only per person. If they stumble, keep it. That\'s the content.',
+        'Question text overlaid at bottom of screen throughout all clips',
+        'Final frame: team together, warm, unposed — not a formal group photo'
+      ],
+      cap:{hook:'You\'ve seen the food. Meet the people who make it.',story:'We asked the team: [question]. These were their answers.',tie:'At Eleven Tribes, every person at this table carries a story.',cta:'Tell us below — whose answer surprised you most ↓'},
+      metrics:['comments','saves','DMs'],
+      never:'Never rehearse or re-shoot for polish. Authenticity is the entire value of this format.'
+    },
+    {
+      p:'events',fmt:'Carousel',reel:false,save:false,prod:'easy',
+      title:'Event Build — First Tease',sub:'Feeling first. One line. DM to get in.',
+      purpose:'Every month has at least one event worth building toward. This is the first mention — emotional invitation, not a promotional poster. A designed flyer graphic NEVER appears on the feed. Lead with the feeling of what it will be like to be there. End with scarcity and a DM keyword. The goal is list-building not ticket selling. People who DM are your warmest leads.',
+      points:[
+        'Lead slide: one strong atmospheric image — faces, the Zimbali setting, warmth and anticipation',
+        'Slide 2: one line only — what it is and when. "Thursday 19 June. Eleven Tribes. 20 seats."',
+        'Slide 3: "DM us [keyword] to get on the list." Nothing more.',
+        'Do NOT reveal the full concept — leave something to discover on the night',
+        'Flyer graphics belong in Stories only. Feed is always editorial photography.'
+      ],
+      cap:{hook:'Something is happening at Eleven Tribes on [date].',story:'We\'re not giving away everything. But we think you\'ll want to be there.',tie:'These are the nights you tell people about later.',cta:'DM us "[keyword]" and we\'ll hold you a seat ↓'},
+      metrics:['DMs','list building','saves'],
+      never:'Never post a designed event graphic as a feed post. Stories only for graphics.'
+    },
+    {
+      p:'craft',fmt:'Carousel',reel:false,save:true,prod:'easy',
+      title:'One Word Per Slide',sub:'The plating sequence. One action. One word.',
+      purpose:'The craft of Chef Malusi broken into single actions — each slide is one close-up moment with one word overlaid in large type. Grind. Season. Fire. Rest. Serve. Builds tension across the swipe. Saved because it\'s beautiful and specific. People send this to friends as evidence of why they need to book. Never a floating dish — hands always connected.',
+      points:[
+        'Words in sequence: Grind — Season — Fire — Rest — Serve. One per slide.',
+        'Each word in large, confident type over a close-up action shot — not centred, slightly off',
+        'Every shot has a hand or a person — never isolated food, never a floating dish',
+        'Chef\'s face visible on at least 2 slides — the opening and the pass',
+        'Final slide: dish placed in front of a guest — both their face and the plate visible',
+        'Shoot at 60fps if possible — slow motion on fire or steam is the standout frame'
+      ],
+      cap:{hook:'There are no shortcuts in this kitchen.',story:'Every plate at Eleven Tribes passes through the same ritual. [Number] steps. One story.',tie:'Craft rooted in heritage. Plated with intention.',cta:'Save this. Then come see it in person ↓'},
+      metrics:['saves','likes','profile visits'],
+      never:'Never open with the finished dish. First frame is always hands on raw ingredients.'
+    },
+    {
+      p:'brand',fmt:'Reel',reel:true,save:true,prod:'easy',
+      title:'Cinematic Reel',sub:'The full Eleven Tribes experience. Save-anchored.',
+      purpose:'A single cinematic Reel that shows what Eleven Tribes IS — the forest setting, the dining room, the view, the food arriving at a table, faces reacting. But here is how you make it save-worthy: text overlays throughout the Reel give viewers information they want to come back to. "The restaurant sits at the edge of the Zimbali forest." "Every dish is rooted in one of South Africa\'s 11 cultures." "Open to the public. No lodge stay required." Now it is both beautiful AND useful. Useful content gets saved. Beautiful content gets watched once.',
+      points:[
+        'Open on the exterior — forest, the approach, the setting. A person walking in.',
+        'Text overlay Rule: every 4 to 5 seconds, one useful fact appears on screen',
+        'Useful facts: the cultural concept / open to public / breakfast lunch dinner / the view / the sharing plates',
+        'People in every shot — a couple at a window table, a waiter moving through the room, hands on food',
+        'Golden hour if possible — the Zimbali light is extraordinary and does half the work',
+        'End frame: a table being set with a person in background. Text: "Your table is waiting." Reservation link in caption.',
+        'Under 45 seconds. Cinematic audio — ambient restaurant sound, not a trending song.'
+      ],
+      cap:{hook:'Before you ask what Eleven Tribes is — watch this.',story:'The forest. The food. The culture. The view. Everything you need to know before you arrive.',tie:'Zimbali Lodge. Ballito. South Africa\'s eleven nations — one table.',cta:'Save this for when you\'re planning your next night out ↓'},
+      metrics:['saves','profile visits','reach'],
+      never:'Never shoot an empty room without a person in it. The setting is beautiful but a person makes it real.'
+    }
+  ]
+},
+{
+  title:'Page 2 — Posts 10 to 18',
+  sub:'Planned shoots. Weeks 3–5. Chef Malusi and the culture take centre stage.',
+  reelCount:3,
+  cells:[
+    {
+      p:'craft',fmt:'Reel',reel:true,save:true,prod:'plan',
+      title:'Chef Malusi — Origin + Making the Dish',sub:'Hands dirty. Unscripted. The cultural story in real time.',
+      purpose:'The single most important Reel on the account. Chef Malusi explains the dish he is making — in real time, hands dirty, no script — and connects it directly to the culture it comes from. This is the post that cannot exist at any other restaurant. The cultural hook is what makes it travel far beyond your existing audience. Hook in the first 2 seconds is everything. This format is what Gordon Ramsay built a global audience on — but rooted in South African heritage instead of aggression.',
+      points:[
+        'Hook — first frame: hands on raw ingredient, text overlay: "This dish is [Tribe]. Here is why it matters."',
+        'Chef talks directly to camera — no teleprompter, no polish, no hospitality script',
+        'Show the specific indigenous ingredient — name it, hold it, explain where it comes from',
+        'Film the technique: one key step that defines this dish culturally',
+        'End with the finished dish in Chef\'s hands, then passing it to a guest — both faces visible',
+        'Ambient kitchen sound underneath. Under 35 seconds. No trending audio — the voice is the content.',
+        'Caption names the tribe explicitly — this is what drives the community shares'
+      ],
+      cap:{hook:'This dish is [Tribe name]. Here is why it exists.',story:'Chef Malusi explains [dish name] — the ingredient, the culture, the reason it\'s on this menu. In his words.',tie:'[Tribe name]. One of eleven. All of us.',cta:'Comment the tribe you want us to cover next ↓'},
+      metrics:['reach','rewatches','comments','shares'],
+      never:'Never open on an empty kitchen or a dish alone. First frame: Chef\'s hands or Chef\'s face.'
+    },
+    {
+      p:'brand',fmt:'Carousel',reel:false,save:true,prod:'easy',
+      title:'We Heard What You Said — Vol. 2',sub:'Fresh quotes. Same editorial confidence.',
+      purpose:'Second appearance of the strongest save format on the account. Always fresh quotes — never repeat from Vol. 1. By this point in the cycle you should have a month\'s worth of new reviews, DMs and verbal feedback to draw from. The format is the same but the content must be new and must be specific.',
+      points:[
+        'Fresh quotes only — zero repeats from Vol. 1',
+        'Prioritise quotes that reference a specific cultural moment: a dish they recognised, a memory it triggered',
+        'Same format: large type, deep atmospheric background, faces visible but soft behind',
+        'Mix the quote sources: Google review, DM, verbal feedback, Dineplan',
+        'Final slide: different image from Vol. 1 — same energy, new moment'
+      ],
+      cap:{hook:'More of what people said when they thought we weren\'t listening.',story:'Another month. Another set of words we didn\'t write.',tie:'This is what eleven nations on one table does to people.',cta:'Save this for when someone asks what Eleven Tribes actually feels like ↓'},
+      metrics:['saves','screenshots','shares'],
+      never:null
+    },
+    {
+      p:'people',fmt:'Carousel',reel:false,save:true,prod:'medium',
+      title:'Mbali\'s Walk — Episode 1',sub:'The entrance. The dining room. Her voice.',
+      purpose:'Restaurant General Manager Mbali Bandele walks you through Eleven Tribes — starting from the entrance and moving through the dining room. She is not a model. She is the host. She talks to camera in her own words about each space, what it means, what guests experience. This sells the full experience before anyone has booked. People save it as a pre-visit guide. Run as a series — each episode covers a different section.',
+      points:[
+        'Slide 1: Mbali at the entrance — her face, warm and direct, looking at camera. Caption: "Welcome. This is where every evening starts."',
+        'Each subsequent slide: one stop on the walk with Mbali in frame — never a room without her',
+        'Her words per slide: one sentence in her voice. "These bowls were made by a ceramicist in KZN." "This view is why we built the restaurant here."',
+        'Shoot in golden hour — the Zimbali light transforms every frame',
+        'Final slide: Mbali at the table, set and ready. "Your table is ready." Reservation link.'
+      ],
+      cap:{hook:'You\'ve seen the food. Let us show you the rest.',story:'Mbali walks you through Eleven Tribes — from the entrance to your table. Episode 1.',tie:'This is what we built. This is who holds it.',cta:'Save this before your visit ↓'},
+      metrics:['saves','profile visits','DMs'],
+      never:'Never shoot this without Mbali in every frame. An empty room tour is not this post.'
+    },
+    {
+      p:'brand',fmt:'Reel',reel:true,save:true,prod:'medium',
+      title:'African Proverb — Video Edition',sub:'One team member. Their language. Their meaning.',
+      purpose:'Once per cycle — a team member faces the camera and speaks an African proverb in their mother tongue. Zulu, Xhosa, Sotho, Tswana, Venda — rotating each cycle. Subtitle appears on screen. Then they explain what it means to THEM personally — not a dictionary definition, their actual lived experience of it. 20 to 30 seconds. Raw, intimate, unpolished. This is the most shareable post on the account. The DM-it-to-your-mother video every single time.',
+      points:[
+        'Film as a Reel — consistent framing, restaurant in background, natural light',
+        'Subtitle the proverb on screen in their language first — then English translation below',
+        'They explain in their own words what it means to them personally. Brief them lightly — then let them speak.',
+        'End with the Eleven Tribes name and: "Eleven nations. One table."',
+        'Rotate team member and language every cycle — never repeat the same person in consecutive cycles',
+        'Do NOT use the static green graphic for this. The person is the entire point.'
+      ],
+      cap:{hook:'"[Proverb in original language]"',story:'[Team member name], [their role], shares what this means to them. In their own words. In their own language.',tie:'At Eleven Tribes, every person at this table carries a culture.',cta:'Drop a proverb from your culture in the comments ↓'},
+      metrics:['shares','comments','saves'],
+      never:'Never use the static graphic version for this post. It is always a video. Always a human face.'
+    },
+    {
+      p:'craft',fmt:'Carousel',reel:false,save:true,prod:'easy',
+      title:'The Dish That Almost Didn\'t Make It',sub:'Story arc. Chef\'s conviction. The turning point.',
+      purpose:'The story of one dish that was nearly cut from the menu — why it stayed, what it required, what it means. Creates deep emotional investment in a dish before anyone has tasted it. One of the highest comment-drivers because people respond to conviction and to stories about fighting for something worth keeping. The story must be real.',
+      points:[
+        'Slide 1: Chef Malusi with the dish — hands visible, face confident',
+        'Slide 2: "This dish almost didn\'t make the menu." One sentence. Let it land.',
+        'Slides 3 to 4: the why — cultural significance, technique challenge, ingredient that was hard to source',
+        'Slide 5: "Chef made it anyway." The turning point.',
+        'Final slide: "Come decide for yourself." Dish in hands. Reservation link.'
+      ],
+      cap:{hook:'This dish almost didn\'t exist.',story:'Chef Malusi fought for [dish name]. Here\'s why — and why it matters.',tie:'Some things are worth the fight. This is one of them.',cta:'Comment if you\'ve tried it. Or come try it ↓'},
+      metrics:['saves','comments','DMs'],
+      never:'Never invent the drama. This must be a real story from Chef Malusi\'s actual development of the menu.'
+    },
+    {
+      p:'people',fmt:'Reel',reel:true,save:false,prod:'medium',
+      title:'Guest Testimony — Documentary Style',sub:'Real guests. Unscripted. Office interview format.',
+      purpose:'Real guests filmed in a consistent interview setup — same framing, straight to camera, completely unscripted. Each person 5 to 8 seconds. Fast cuts between them. Feels like a documentary, not a marketing video. The format signals truth. New followers share this with the person they want to bring because it feels like peer recommendation, not advertising.',
+      points:[
+        'Set up a consistent interview corner in the restaurant — good light, restaurant visible behind',
+        'Ask one specific question: "What did you expect vs what you got?" or "What\'s the one thing you\'d tell someone before they come?"',
+        'First frame: a face with one genuinely specific opening line — not "it was amazing"',
+        'Fast cuts — under 45 seconds total, 4 to 6 guests',
+        'One or two cutaways only — always to guest reactions, never to empty food',
+        'Feels like a documentary. If it starts to feel like an ad, re-edit.'
+      ],
+      cap:{hook:'We asked a few people what they actually thought.',story:'These were their words. Unedited. Unscripted.',tie:'Eleven nations on one table. This is what that feels like.',cta:'Tag the person you\'d bring here ↓'},
+      metrics:['follows','saves','shares'],
+      never:'Never coach answers or re-shoot for a better response. The stumble is more trustworthy than the polished version.'
+    },
+    {
+      p:'craft',fmt:'Carousel',reel:false,save:true,prod:'easy',
+      title:'Slow Moments',sub:'Texture, sound, hands. Intimate and unrepeatable.',
+      purpose:'Close-up moments that prioritise texture and detail. The heritage bread arriving. Wine being poured into a glass held by a person. Steam rising from a clay bowl. A hand over indigenous grain. Every slide has a hand or person connected — never isolated food. Deeply saved for the aesthetic. Caption tells people to turn sound on — the ambient restaurant sounds are part of the experience.',
+      points:[
+        'Shot list: hand tearing heritage bread / wine poured into a glass being held / steam off an open bowl with hands around it / chef placing a garnish with full face visible',
+        'Every single slide has a hand, a face, or both — no food ever appears alone',
+        'Caption actively encourages sound on — ambient restaurant sound is part of the content',
+        'No music, no effects — just the real sounds of the kitchen and the dining room',
+        'Final slide: faces at the table, warm, present, still — the meal in full flow'
+      ],
+      cap:{hook:'Turn your sound on. ↑',story:'Some moments at Eleven Tribes are better felt than described.',tie:'Heritage ingredients. Ancient techniques. Your table tonight.',cta:'Save this for the mood ↓'},
+      metrics:['saves','rewatches','shares'],
+      never:'Never include a single image without a human element. Hands, faces, steam — always something alive.'
+    },
+    {
+      p:'brand',fmt:'Carousel',reel:false,save:true,prod:'medium',
+      title:'11 Nations Series',sub:'One tribe. One story. One dish. Repeats every cycle.',
+      purpose:'The most important episodic series on the account. Each cycle, one of South Africa\'s 11 official cultures gets a dedicated carousel — the food traditions, the indigenous ingredient, the cultural significance, and exactly how it shows up on the Eleven Tribes menu. People follow the account to see the next episode. This is the series that builds long-term audience growth and makes @eleventribes the reference account for South African culinary culture.',
+      points:[
+        'Slide 1: title card — "[Nation name]. Nation [X] of 11." Bold, clean, no decoration needed',
+        'Slide 2: the defining ingredient of that culture\'s food tradition — held in hands, face visible',
+        'Slide 3: the cultural context — one paragraph, real and specific. Name the people, the region, the tradition.',
+        'Slide 4: how this appears on the Eleven Tribes menu — the specific dish',
+        'Slide 5: Chef Malusi or a team member with heritage from that culture, speaking to the connection',
+        'Final slide: "Eleven nations. One table." — consistent closing across all 11 episodes',
+        'Rotate through all 11 nations across cycles — this series never ends'
+      ],
+      cap:{hook:'Nation [X] of 11: [Culture name].',story:'[2–3 sentences — specific ingredient, specific tradition, specific history. Name it exactly. Vague cultural content is worse than no cultural content.]',tie:'This is one of eleven stories at Eleven Tribes.',cta:'Comment which nation you want us to cover next ↓'},
+      metrics:['saves','follows','comments'],
+      never:'Never be vague. Name the specific ingredient. Name the specific tradition. Generic heritage content fails.'
+    },
+    {
+      p:'people',fmt:'Carousel',reel:false,save:false,prod:'easy',
+      title:'Month Recap — Vol. 1',sub:'End of month. Real moments. Faces first.',
+      purpose:'Closes Page 2 — which maps to the end of the first month of the cycle. A genuine recap of the month\'s best moments: the events, the guest faces, the team, a quote that stood out. Not a highlight reel of your best content — a human-first look at what actually happened. Makes regulars feel seen. Makes new followers feel they missed something worth being part of next month.',
+      points:[
+        'Images: best guest moments from the month — joy, connection, celebration',
+        'Include one team moment — the people behind the month',
+        'One guest quote from the month as a slide — large type, same format as Things Overheard',
+        'One specific thing that happened this month that you want to remember',
+        'Final slide: "Next month at Eleven Tribes —" and one teaser line. Leaves them wanting more.',
+        'Post within 48 hours of month-end — timeliness makes it feel alive not archival'
+      ],
+      cap:{hook:'That\'s [month] at Eleven Tribes. Done.',story:'A few moments we\'ll remember. A few things people said that stayed with us.',tie:'See you at the table.',cta:'Tag who you came with this month ↓'},
+      metrics:['comments','tags','follows'],
+      never:null
+    }
+  ]
+},
+{
+  title:'Page 3 — Posts 19 to 27',
+  sub:'High production. Weeks 6–9. The best content on the account. Close the cycle strong.',
+  reelCount:3,
+  cells:[
+    {
+      p:'craft',fmt:'Reel',reel:true,save:true,prod:'plan',
+      title:'Chef Malusi — Celeb Format',sub:'Conviction. No recipe. Direct to camera. The Gordon Ramsay treatment.',
+      purpose:'Chef Malusi as a cultural authority — not a cooking tutorial, not a hospitality script. A man with deep conviction about food, heritage and what South Africa actually tastes like, talking directly to camera. Short, sharp, no filler. This is the format that built global chef personalities. The goal is not to teach — it is to make people feel that they are in the presence of someone who genuinely knows something they don\'t.',
+      points:[
+        'Hook: Chef faces camera, one bold statement. "Most people have never tasted real South African food. Let me show you."',
+        'No recipe. No step-by-step. Just Chef\'s philosophy — his relationship with an ingredient, a culture, a memory',
+        'Film in the kitchen or at the pass — his environment, his territory',
+        'Under 30 seconds. No B-roll cutaways. The camera does not leave his face.',
+        'One specific provocative statement that makes people want to debate in the comments',
+        'End on a dish he holds up — not explained, just presented. Let it speak.'
+      ],
+      cap:{hook:'"[Chef\'s actual opening line — specific and provocative]"',story:'Chef Malusi on [ingredient / culture / dish]. In his words.',tie:'Eleven nations. One chef. One table.',cta:'Tell us if you agree. Or come prove him wrong ↓'},
+      metrics:['reach','comments','follows'],
+      never:'Never give Chef a script or talking points to memorise. Brief him with a topic and a starting line. Then stop directing.'
+    },
+    {
+      p:'events',fmt:'Carousel',reel:false,save:false,prod:'easy',
+      title:'Next Event — Tease',sub:'Build the list. Don\'t announce. Drive DMs.',
+      purpose:'First mention of the next cycle\'s event — just enough to create curiosity and drive DMs. Goal is list-building not announcement. People who DM "YES" are your warmest leads and your first-to-fill seats. Never a flyer. Always atmospheric photography with faces. Leave something to discover.',
+      points:[
+        'One strong atmospheric image — faces, the Zimbali setting, warmth',
+        'Slide 2: "[Month]. Something is happening. [X] seats."',
+        'Slide 3: "DM us [keyword] to be first." Nothing else.',
+        'Do not reveal the full concept — what they don\'t know keeps them engaged',
+        'Build the DM list from this post before any other promotion goes out'
+      ],
+      cap:{hook:'Something is coming to Eleven Tribes in [month].',story:'We\'re not ready to say everything yet. But the seats are limited and the list is filling.',tie:'The best nights here always start with a DM.',cta:'DM us "[keyword]" to get on the list first ↓'},
+      metrics:['DMs','list building','saves'],
+      never:'Never post a designed graphic flyer as a feed post. Always editorial photography.'
+    },
+    {
+      p:'craft',fmt:'Reel',reel:true,save:true,prod:'plan',
+      title:'Food Origin — Farmers Market',sub:'Chef at the source. The supply chain as content.',
+      purpose:'Chef Malusi off-site — at a KZN farmers market or a local farm — picking produce, talking to the farmer, explaining why he chose this specific supplier for this specific ingredient. The food story starts before the kitchen. This is one of the most saved formats globally right now because it answers the question every conscious diner is asking: where does this actually come from? Nobody else in the region is doing this.',
+      points:[
+        'Open with Chef arriving at the market or farm — wide shot, him in his environment',
+        'He picks up a specific ingredient and talks directly to camera about why THIS farmer',
+        'Include the farmer — their face, their name on screen, one line about what they grow',
+        'Connect explicitly to the dish it becomes on the Eleven Tribes menu',
+        'End with Chef back at the restaurant kitchen, same ingredient in his hands',
+        'Text overlay: "[Ingredient] — sourced from [Farm/Market], [place]. On the menu tonight."',
+        'Under 45 seconds. Natural sound throughout. This is a story, not a commercial.'
+      ],
+      cap:{hook:'This is where the [dish name] starts.',story:'Before the kitchen — Chef Malusi at [market/farm name] in [location]. This is why he comes here.',tie:'Indigenous ingredients. Local farmers. South African heritage on your plate.',cta:'Save this. Then come taste where it ends up ↓'},
+      metrics:['saves','shares','follows'],
+      never:'Never film this like a brand advertisement. No drone shots, no colour-graded perfection. Raw and real.'
+    },
+    {
+      p:'people',fmt:'Carousel',reel:false,save:true,prod:'medium',
+      title:'Dish Storytelling — Vol. 2',sub:'Different dish. Different tribe. Same powerful format.',
+      purpose:'Second appearance of the most important save-driver on the account. A completely different dish and a completely different tribe — not a Vol. 2 in feel, only in sequence. By this point in the cycle, followers know the format and are hungry for the next cultural story. The familiarity of the format INCREASES saves — people know this is worth bookmarking.',
+      points:[
+        'Choose a dish from a different tribe than Vol. 1 — never repeat the same culture',
+        'Slide 1: Chef Malusi — different setting or angle from Vol. 1, same confidence',
+        'Follow the exact same 6-slide structure as Dish Storytelling on Page 1',
+        'The cultural context on Slide 3 must be researched and specific — name the people, the region, the tradition',
+        'Guest receiving the dish on Slide 6 — ideally a guest whose heritage connects to that tribe'
+      ],
+      cap:{hook:'This dish is [Tribe name]. Here is its story.',story:'[Completely different cultural story — specific, human, researched.]',tie:'Eleven nations. This is another one.',cta:'Save this. Then come order it ↓'},
+      metrics:['saves','comments','DMs'],
+      never:'Never open with the finished dish. Never repeat the same tribe as Vol. 1. Chef\'s face first, always.'
+    },
+    {
+      p:'people',fmt:'Carousel',reel:false,save:true,prod:'medium',
+      title:'Mbali\'s Walk — Episode 2',sub:'A different part of the space. A different story.',
+      purpose:'Second episode of the Mbali\'s Walk series — covering a different section of the restaurant or lodge. The terrace with forest views, the private dining space, the kitchen pass, the bar. Each episode builds the audience\'s intimate knowledge of the space so that by the time they visit, they already feel at home. Series format builds appointment viewing — people come back for the next episode.',
+      points:[
+        'Episode 2 covers a completely different area from Episode 1',
+        'Same series format: title card "Mbali\'s Walk — Episode 2" on the opening slide',
+        'Mbali in every single frame — this is her space and her story',
+        'Her words per slide: one sentence, her voice, her knowledge — not menu language',
+        'Include one detail guests would never notice without being told — a design choice, an ingredient, a view',
+        'Final slide: "Episode 3 coming next cycle." Builds anticipation for the loop.'
+      ],
+      cap:{hook:'Back with Mbali. Episode 2.',story:'This time — [specific area of the restaurant/lodge]. What you\'ll see when you arrive.',tie:'Every corner of Eleven Tribes has a story. Mbali knows them all.',cta:'Save this before your visit ↓'},
+      metrics:['saves','profile visits','DMs'],
+      never:'Never shoot without Mbali in every frame. A room tour without her is not this series.'
+    },
+    {
+      p:'people',fmt:'Reel',reel:true,save:false,prod:'plan',
+      title:'Mbali\'s Walk — Reel Edition',sub:'The full walk. Her voice. Moving through the space.',
+      purpose:'The Reel version of Mbali\'s Walk — the only one in the entire 27-post cycle. She walks through the restaurant talking to camera in one continuous piece, cut together to feel like you are walking with her. This travels further than the Carousel version because it puts a person in motion through an extraordinary space. People share this with friends as a "we need to go here" recommendation.',
+      points:[
+        'Film in one session — walk the route you want guests to experience',
+        'Mbali talks continuously as she walks — not posed speeches, natural commentary',
+        'Cut between moments: the entrance / the view through the windows / a table being set / the kitchen pass / the forest outside',
+        'Always in motion — this is a walk, not a tour of static rooms',
+        'Text overlays: key facts as she passes them. "The dining room seats [X] guests." "Open to the public — no lodge stay required."',
+        'Under 60 seconds. Ends with Mbali turning to camera: "See you soon."'
+      ],
+      cap:{hook:'Mbali walks you through Eleven Tribes.',story:'From the entrance to your table — everything you need to know before you arrive.',tie:'Zimbali Lodge. Ballito. Come as you are.',cta:'Book your table. Link in bio ↓'},
+      metrics:['reach','saves','profile visits'],
+      never:'Never film an empty section without Mbali moving through it. She must be in every cut.'
+    },
+    {
+      p:'brand',fmt:'Carousel',reel:false,save:true,prod:'easy',
+      title:'11 Nations Series — Episode 2',sub:'Next tribe. Different culture. Same series energy.',
+      purpose:'Second episode of the 11 Nations Series — a completely different tribe and cultural food tradition. By now the audience knows and expects this format. The familiarity makes it more powerful: people save it as a cultural reference, share it to community groups, and comment with requests for the next tribe. This is the content that makes @eleventribes the authority on South African culinary heritage.',
+      points:[
+        'Different tribe from Episode 1 — research thoroughly before writing',
+        'Same format: title card, ingredient, cultural context, dish, person, closing card',
+        'The cultural context paragraph must be more specific than Episode 1 — the series should deepen',
+        'If possible, include a team member with heritage from this tribe speaking to the dish',
+        'Final slide: "Which nation next? Tell us below." — consistent comment driver'
+      ],
+      cap:{hook:'Nation [Y] of 11: [Culture name].',story:'[New, different, deeply researched cultural story. Never vague. Always specific.]',tie:'This is one of eleven stories at Eleven Tribes.',cta:'Which nation do you want next ↓'},
+      metrics:['saves','comments','follows'],
+      never:'Never repeat a tribe already covered. Never be vague about the cultural specifics.'
+    },
+    {
+      p:'people',fmt:'Carousel',reel:false,save:true,prod:'easy',
+      title:'Our People — Vol. 2',sub:'Fresh curation. Same opener. Best of the full cycle.',
+      purpose:'Second and final Our People post of the cycle — always the most powerful guest images from the entire three-month run. This one carries the emotional weight of everything that happened across the cycle. Never reuse images from Vol. 1. The familiarity of the opener ("These are our people") paired with completely fresh faces creates a sense of an ongoing, living community.',
+      points:[
+        'Zero repeat images from Vol. 1 — completely fresh faces and moments',
+        'Best of the entire cycle — not just the past month',
+        'Lean into the most emotionally powerful images: celebrations, connections, cultural recognition moments',
+        'If any guest has become a regular — feature them with their permission',
+        'Final slide: "See you at the table." Reservation link.'
+      ],
+      cap:{hook:'"These are our people."',story:'Three months. Hundreds of tables. These are some of the faces we won\'t forget.',tie:'Eleven nations. Every kind of person. One table.',cta:'Tag who you came with — or who you\'re bringing next ↓'},
+      metrics:['tags','saves','comments'],
+      never:'Never reuse images from Vol. 1. If you run out of guest content, shoot more — do not recycle.'
+    },
+    {
+      p:'brand',fmt:'Carousel',reel:false,save:false,prod:'easy',
+      title:'Month Recap — Vol. 2',sub:'Closes the full cycle. Sets up the next one.',
+      purpose:'Closes the entire 27-post cycle — the end of the third month, the end of the loop. Same energy as Month Recap Vol. 1 but with the weight of the full cycle behind it. Makes the cycle feel complete. Signals to the audience that something new is starting. The final slide should create anticipation for the next loop — without revealing too much.',
+      points:[
+        'Best moments from Month 3 — faces, events, team, guests',
+        'Include one moment from each page of the cycle if possible — shows the range',
+        'One standout guest quote from the full cycle as a dedicated slide',
+        'Final slide: "A new cycle starts [date / soon]. Same table. New stories." — sets up the loop',
+        'Post on the last day of the month — timing signals intentionality'
+      ],
+      cap:{hook:'That\'s the cycle. Done.',story:'Three months of Eleven Tribes. Here are some of the moments that made it.',tie:'See you at the table. Again.',cta:'Tell us your favourite moment from this cycle ↓'},
+      metrics:['comments','saves','follows'],
+      never:null
+    }
+  ]
+}
+];
+
+let pn = 1;
+
+function buildPages(){
+  return pages.map((pg,pi)=>{
+    const cells = pg.cells.map((c,ci)=>{
+      const pl = P[c.p];
+      const n = pn++;
+      const reelDot = c.reel ? '<div class="cell-reel-dot"></div>' : '';
+      const saveBadge = c.save ? '<div class="save-badge">save ↓</div>' : '';
+      return `<div class="cell ${pl.cell}" onclick="openModal(${pi},${ci})">
+        ${reelDot}${saveBadge}
+        <div>
+          <div class="cell-num">Post ${n}</div>
+          <div class="cell-title">${c.title}</div>
+          <div class="cell-sub">${c.sub}</div>
+        </div>
+        <div class="cell-bottom">
+          <span class="fmt-pill ${pl.pill}">${c.fmt}</span>
+          <span class="cell-arr">↗</span>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="page-block">
+      <div class="page-hdr">
+        <span class="page-hdr-title">${pg.title}</span>
+        <div class="page-hdr-meta">
+          <span class="page-hdr-sub">${pg.sub}</span>
+          <span class="reel-badge">${pg.reelCount} Reels</span>
+        </div>
+      </div>
+      <div class="grid">${cells}</div>
+    </div>`;
+  }).join('');
+}
+
+const prodMap = {
+  easy:  {cls:'prod-easy',  label:'✦ Easy to execute — no planned shoot needed'},
+  medium:{cls:'prod-medium',label:'◆ Medium — plan a shoot session'},
+  plan:  {cls:'prod-plan',  label:'▲ Planned production — schedule in advance'}
+};
+
+function openModal(pi,ci){
+  const c = pages[pi].cells[ci];
+  const pl = P[c.p];
+
+  const pillarEl = document.getElementById('m-pillar');
+  pillarEl.textContent = pl.name;
+  pillarEl.className = `m-pillar ${pl.pill}`;
+
+  const fmtStr = c.reel ? `${c.fmt} · Gold dot = Reel` : c.fmt;
+  document.getElementById('m-fmt').textContent = fmtStr;
+
+  const pm = prodMap[c.prod];
+  document.getElementById('m-prod').innerHTML =
+    `<div class="prod-badge ${pm.cls}">${pm.label}</div>`;
+
+  document.getElementById('m-title').textContent = c.title;
+  document.getElementById('m-sub').textContent = c.sub;
+  document.getElementById('m-purpose').textContent = c.purpose;
+
+  document.getElementById('m-list').innerHTML = c.points.map(pt=>
+    `<li><span class="mdot"></span><span>${pt}</span></li>`
+  ).join('');
+
+  const cap = c.cap;
+  document.getElementById('m-cap').innerHTML = `
+    <div class="cap-row"><span class="cap-lbl">Hook</span><span>${cap.hook}</span></div>
+    <div class="cap-row"><span class="cap-lbl">Story</span><span>${cap.story}</span></div>
+    <div class="cap-row"><span class="cap-lbl">Tie-in</span><span>${cap.tie}</span></div>
+    <div class="cap-row"><span class="cap-lbl">CTA</span><span>${cap.cta}</span></div>
+  `;
+
+  document.getElementById('m-metrics').innerHTML = c.metrics.map(m=>
+    `<span class="metric">${m}</span>`
+  ).join('');
+
+  document.getElementById('m-never').innerHTML = c.never
+    ? `<div class="m-never"><b>Never:</b> ${c.never}</div>` : '';
+
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open');
+}
+function handleOverlay(e){
+  if(e.target===document.getElementById('overlay')) closeModal();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+document.getElementById('pages').innerHTML = buildPages();
+</script>
+</body>
+</html>
